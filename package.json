@@ -1,0 +1,17 @@
+{
+  "name": "@mattd3v/wim",
+  "version": "1.0.0",
+  "description": "Web Implementation of a Modal text editor.",
+  "repository": "git@github.com:mattd3v/wim.git",
+  "author": "Matt Dumler <mattd3v@pm.me>",
+  "license": "MIT",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "node --experimental-modules test.mjs"
+  },
+  "devDependencies": {
+    "electron": "^8.2.5",
+    "spectron": "^10.0.1"
+  }
+}
