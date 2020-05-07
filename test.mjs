@@ -23,8 +23,10 @@ async function test (tests) {
 }
 
 async function suite ({ client }) {
-  const el = await client.getText('#header');
-  assert.equal(el, 'Hello, World!');
+  const t = await client.getText('#title');
+  assert.equal(t, 'Hello, World!');
+  const s = await client.getText('#subtitle');
+  assert.equal(s, 'Goodbye, cruel World!');
 }
 
 // Exit status
