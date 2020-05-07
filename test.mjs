@@ -10,32 +10,40 @@ import assert from 'assert';
 import spectron from 'spectron';
 import electron from 'electron';
 
-async function test (tests) {
+// Test runner.
+async function test () {
   // Create new Spectron app instance.
   const app = new spectron.Application({
     path: electron,
     args: ['main.js']
   });
 
-  await app.start();
-  await tests(app);
-  await app.stop();
+  // Start, test, and stop app.
+  try {
+    await app.start();
+
+    /* Tests start here. */
+
+    // Test that focus starts on textarea,
+    // and it takes user input.
+    const input = 'hello';
+    await app.client.keys(Array.from(input))
+    const val = await app.client.getValue('textarea')
+    assert.equal(val, input);
+
+  } finally {
+    await app.stop();
+  }
 }
 
-async function suite ({ client }) {
-  const t = await client.getText('#title');
-  assert.equal(t, 'Hello, World!');
-  const s = await client.getText('#subtitle');
-  assert.equal(s, 'Goodbye, cruel World!');
-}
+// Possible exit statuses
+const OK = 0, FAIL = 1;
 
 // Exit status
-const OK = 0, FAIL = 1;
 let status = OK;
 
 // Execute test suite
-test(suite)
-  .catch(function ({ message }) {
+test().catch(function ({ message }) {
     console.error(message)
     status = FAIL
   })
