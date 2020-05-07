@@ -3,26 +3,41 @@
  * Matt Dumler <mattd3v@pm.me>
  */
 
-// Electron testing framework and runtime.
-import spectron from 'spectron'
-import electron from 'electron'
-
 // Node assertion API for testing.
-import assert from 'assert'
+import assert from 'assert';
 
-// Create new Spectron app instance.
-const app = new spectron.Application({
-  path: electron,
-  args: [ './main.js' ]
-})
+// Electron testing framework and runtime.
+import spectron from 'spectron';
+import electron from 'electron';
 
-// Chain app start, test, stop, and handle any errors.
-app.start()
-  .then(function () {
-    return app.client.getText('#header')
+async function test (tests) {
+  // Create new Spectron app instance.
+  const app = new spectron.Application({
+    path: electron,
+    args: ['main.js']
+  });
+
+  await app.start();
+  await tests(app);
+  await app.stop();
+}
+
+async function suite ({ client }) {
+  const el = await client.getText('#header');
+  assert.equal(el, 'Hello, World!');
+}
+
+// Exit status
+const OK = 0, FAIL = 1;
+let status = OK;
+
+// Execute test suite
+test(suite)
+  .catch(function ({ message }) {
+    console.error(message)
+    status = FAIL
   })
-  .then(function (el) {
-    assert.equal(el, 'Hello, 🌎!')
+  .finally(function () {
+    process.exit(status)
   })
-  .catch((err) => console.error(err.message))
-  .finally(() => app.stop())
+
